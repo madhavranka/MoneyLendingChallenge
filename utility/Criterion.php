@@ -39,9 +39,9 @@ class Criterion
     public function validateAgeAndCity(): array
     {
         $result = $this->isValidAge();
-        if($result['error'] != "")return $result;
+        if ($result['error'] != "") return $result;
         $result = $this->isValidCity();
-        if($result['error'] != "")return $result;
+        if ($result['error'] != "") return $result;
         return ['error' => ""];
     }
 
@@ -52,9 +52,9 @@ class Criterion
     {
         $age = strtotime((new DateTime())->format('Y-m-d H:i:s')) -
             strtotime($this->dateOfBirth->format('Y-m-d H:i:s'));
-        if($age < 18*self::SECONDS_IN_A_YEAR){
+        if ($age < 18 * self::SECONDS_IN_A_YEAR) {
             return ['error' => "Age less than 18 years"];
-        }else if($age > 59*self::SECONDS_IN_A_YEAR){
+        } else if ($age > 59 * self::SECONDS_IN_A_YEAR) {
             return ['error' => "Age greater than 60 years"];
         }
         return ['error' => ""];
@@ -67,17 +67,17 @@ class Criterion
      */
     private function isValidCity(): array
     {
-        if(isset(self::CITIES_TO_TIER[$this->city])){
+        if (isset(self::CITIES_TO_TIER[$this->city])) {
             $this->cityTier = self::CITIES_TO_TIER[$this->city];
             switch ($this->cityTier) {
                 case 1:
                     return $this->creditScore < self::TIER_ONE_MIN_SCORE ?
-                        ["error" => "Score is less for the tier".$this->cityTier." city"] : ["error" => ""];
+                        ["error" => "Score is less for the tier" . $this->cityTier . " city"] : ["error" => ""];
                 case 2:
                     return $this->creditScore < self::TIER_TWO_MIN_SCORE ?
-                        ["error" => "Score is less for the tier".$this->cityTier." city"] : ["error" => ""];
+                        ["error" => "Score is less for the tier" . $this->cityTier . " city"] : ["error" => ""];
                 default:
-                    return ["error" => "No plans for tier".$this->cityTier. " city"];
+                    return ["error" => "No plans for tier" . $this->cityTier . " city"];
             }
         }
         return ["error" => "Invalid City"];

@@ -1,9 +1,10 @@
 <?php
+
 namespace MoneyLendingChallenge;
 
 include "utility/Validator.php";
 include "utility/RateOfInterest.php";
-include "utility/Criterion.php";
+include_once "utility/Criterion.php";
 include "utility/Response.php";
 
 use Criterion;
@@ -17,11 +18,11 @@ class Loan
      * @var array
      */
     public static array $validationSpecs = [
-        "amount" => ['type' => 'fn', "class" => "Validator", "name" => "validateLoanAmount" ,
+        "amount" => ['type' => 'fn', "class" => "Validator", "name" => "validateLoanAmount",
             "min-value" => 50000, "max-value" => 500000],
         "score" => ['type' => 'integer', "min-val" => 0, "max-val" => 900, "name" => "score"],
         "dob" => ["type" => "fn", "class" => "Validator", "name" => "validateDateOfBirth"],
-        "name" => ["type" => "string", "min-length" => 1, "regex" => "^[a-zA-Z\s]*$^" ,"name" => "name"],
+        "name" => ["type" => "string", "min-length" => 1, "regex" => "^[a-zA-Z\s]*$^", "name" => "name"],
         "city" => ["type" => "string", "min-length" => 1, "name" => "city"]
     ];
 
@@ -32,18 +33,19 @@ class Loan
         $this->postParams = $_REQUEST;
     }
 
-    public function main(){
+    public function main()
+    {
         $validationResult = $this->validateRequest();
         $this->processValidationFailure($validationResult);
         $criterionUtil = new Criterion($this->postParams);
         $validationResult = $criterionUtil->validateAgeAndCity();
         $this->processValidationFailure($validationResult);
         $interestUtil = new RateOfInterest($this->postParams['amount'], $criterionUtil->getCityTier(),
-            $this->postParams['score'] );
+            $this->postParams['score']);
         $repaymentSchedule = $interestUtil->createRepaymentSchedule();
         Response::echoResponse([
             'status' => "Approve",
-            "Rate of Interest" => $interestUtil->getRateOfInterest()."%",
+            "Rate of Interest" => $interestUtil->getRateOfInterest() . "%",
             'schedule' => $repaymentSchedule
         ]);
     }
@@ -54,12 +56,12 @@ class Loan
     private function validateRequest(): array
     {
         $validator = new Validator();
-        return $validator->validateSpec(self::$validationSpecs,$this->postParams);
+        return $validator->validateSpec(self::$validationSpecs, $this->postParams);
     }
 
     private function processValidationFailure(array $validationResult)
     {
-        if($validationResult['error']!=""){
+        if ($validationResult['error'] != "") {
             $validationResult['status'] = "Reject";
             Response::echoResponse($validationResult);
         }

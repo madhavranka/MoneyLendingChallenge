@@ -2,12 +2,13 @@
 
 class Response
 {
-    public static function echoResponse($result){
-        if(is_string($result)){
+    public static function echoResponse($result)
+    {
+        if (is_string($result)) {
             echo $result;
-        }else{
+        } else {
             echo json_encode($result);
         }
-        die();
+        //die();
     }
 }

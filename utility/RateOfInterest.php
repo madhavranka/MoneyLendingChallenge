@@ -9,7 +9,8 @@ class RateOfInterest
     private int $amount;
     private int $rateOfInterest;
 
-    public function __construct($amount, $cityTier, $score){
+    public function __construct($amount, $cityTier, $score)
+    {
         $this->amount = $amount;
         $this->calculateInterestRate($cityTier, $score);
     }
@@ -18,7 +19,8 @@ class RateOfInterest
      * @param $cityTier
      * @param $creditScore
      */
-    private function calculateInterestRate($cityTier, $creditScore){
+    private function calculateInterestRate($cityTier, $creditScore)
+    {
         switch ($cityTier) {
             case 1:
                 $this->rateOfInterest = $this->calculateInterestRateForTierOneCity($creditScore);
@@ -33,11 +35,10 @@ class RateOfInterest
 
     private function calculateInterestRateForTierOneCity($creditScore): int
     {
-        if($creditScore >= 300) {
-            if($creditScore < 501){
+        if ($creditScore >= 300) {
+            if ($creditScore < 501) {
                 return 14;
-            }
-            else if ($creditScore < 801) {
+            } else if ($creditScore < 801) {
                 return 12;
             } else {
                 return 10;
@@ -67,8 +68,8 @@ class RateOfInterest
         $date = new DateTime('first day of this month');
         $principal = $this->calculatePrincipal();
         $interestAmount = $this->calculateInterestAmount();
-        for($month = 0; $month < self::TENURE; $month++){
-            $schedule []= [
+        for ($month = 0; $month < self::TENURE; $month++) {
+            $schedule [] = [
                 'Principal' => $principal,
                 'Interest' => $interestAmount,
                 'EMI Date' => ($date->modify('+1 month'))->format('d/m/Y')
@@ -82,16 +83,18 @@ class RateOfInterest
      */
     private function calculatePrincipal(): int
     {
-        return ceil($this->amount/self::TENURE);
+        return ceil($this->amount / self::TENURE);
     }
 
     /** Returns interest amount to be paid every month
      * @return float|int
      */
-    private function calculateInterestAmount(){
-        if($this->rateOfInterest !== 100) {
-            return intval(($this->rateOfInterest * $this->amount) / (self::TENURE*100));
-        }return 0;
+    private function calculateInterestAmount()
+    {
+        if ($this->rateOfInterest !== 100) {
+            return intval(($this->rateOfInterest * $this->amount) / (self::TENURE * 100));
+        }
+        return 0;
     }
 
     public function getRateOfInterest(): int
