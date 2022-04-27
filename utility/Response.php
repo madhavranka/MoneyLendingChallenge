@@ -9,6 +9,6 @@ class Response
         } else {
             echo json_encode($result);
         }
-        //die();
+        die();
     }
 }
