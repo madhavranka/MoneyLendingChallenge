@@ -2,10 +2,10 @@
 
 namespace MoneyLendingChallenge;
 
-include "utility/Validator.php";
-include "utility/RateOfInterest.php";
+include_once "utility/Validator.php";
+include_once "utility/RateOfInterest.php";
 include_once "utility/Criterion.php";
-include "utility/Response.php";
+include_once "utility/Response.php";
 
 use Criterion;
 use RateOfInterest;

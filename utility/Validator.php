@@ -47,10 +47,10 @@ class Validator
         }
         $len = strlen($val);
         if (array_key_exists('max-length', $spec) && $len > $spec['max-length']) {
-            return ['error' => $spec['name'] . ' value too long', 'path' => [], 'val' => $val];
+            return ['error' => $spec['name'] . ' value too long'];
         }
         if (array_key_exists('min-length', $spec) && $len < $spec['min-length']) {
-            return ['error' => $spec['name'] . ' value too short', 'path' => [], 'val' => $val];
+            return ['error' => $spec['name'] . ' value too short'];
         }
         return ['error' => ''];
     }
@@ -73,7 +73,7 @@ class Validator
         try {
             $dateOfBirthObject = new DateTime($dateOfBirth);
         } catch (Exception $e) {
-            return ['error' => "Invalid date of birth format: " . $e->getTrace()];
+            return ['error' => "Invalid date of birth format: " . $e->getMessage()];
         }
         if ($dateOfBirthObject >= $currentTime) {
             return ['error' => "Date of Birth cannot be in future"];
@@ -90,7 +90,7 @@ class Validator
             return ['error' => "Amount must be greater than or equal to " . $specs['min-value']];
         }
         if (isset($specs['max-value']) && $amount > $specs['max-value']) {
-            return ['error' => "Amount must be less than or equal to" . $specs['max-value']];
+            return ['error' => "Amount must be less than or equal to " . $specs['max-value']];
         }
         if ($amount % 10000 != 0) {
             return ['error' => "Amount must be a multiple of 10000"];
