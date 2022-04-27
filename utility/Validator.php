@@ -2,14 +2,39 @@
 
 class Validator
 {
-    private static function validateIntSpec($spec, $val): array
+    public function validateSpec($specs, $params): array
     {
-        if (!is_int(intval($val))) return ['error' => $spec['name'] . ' value must be an integer'];
-        if (array_key_exists('min-val', $spec) && $val < $spec['min-val']) {
-            return ['error' => $spec['name'] . ' value too small, should be greater than or equal to ' . $spec['min-val']];
+        $result = ['error' => ''];
+        foreach ($specs as $name => $spec) {
+            switch ($spec['type']) {
+                case 'fn':
+                    $result = self::validateFnSpec($spec, $params[$name]);
+                    if ($result['error'] != "") return $result;
+                    break;
+                case 'string':
+                    $result = self::validateStringSpec($spec, $params[$name]);
+                    if ($result['error'] != "") return $result;
+                    break;
+                case 'integer':
+                    $result = self::validateIntSpec($spec, $params[$name]);
+                    if ($result['error'] != "") return $result;
+                    break;
+            }
         }
-        if (array_key_exists('max-val', $spec) && $val > $spec['max-val']) {
-            return ['error' => $spec['name'] . ' value too large, should be less than or equal to ' . $spec['max-val']];
+        return $result;
+    }
+
+    /** Method for custom validation using a function of any given class
+     * @param $spec
+     * @param $val
+     * @return string[]
+     */
+    private static function validateFnSpec($spec, $val): array
+    {
+        $args = empty($spec['class']) ? $spec['name'] : [$spec['class'], $spec['name']];
+        $result = call_user_func($args, $val, $spec);
+        if ($result["error"] != "") {
+            return $result;
         }
         return ['error' => ''];
     }
@@ -30,36 +55,16 @@ class Validator
         return ['error' => ''];
     }
 
-    private static function validateFnSpec($spec, $val): array
+    private static function validateIntSpec($spec, $val): array
     {
-        $args = empty($spec['class']) ? $spec['name'] : [$spec['class'], $spec['name']];
-        $result = call_user_func($args, $val, $spec);
-        if ($result["error"] != "") {
-            return $result;
+        if (!is_int(intval($val))) return ['error' => $spec['name'] . ' value must be an integer'];
+        if (array_key_exists('min-val', $spec) && $val < $spec['min-val']) {
+            return ['error' => $spec['name'] . ' value too small, should be greater than or equal to ' . $spec['min-val']];
+        }
+        if (array_key_exists('max-val', $spec) && $val > $spec['max-val']) {
+            return ['error' => $spec['name'] . ' value too large, should be less than or equal to ' . $spec['max-val']];
         }
         return ['error' => ''];
-    }
-
-    public function validateSpec($specs, $params)
-    {
-        $result = ['error' => ''];
-        foreach ($specs as $name => $spec) {
-            switch ($spec['type']) {
-                case 'fn':
-                    $result = self::validateFnSpec($spec, $params[$name]);
-                    if ($result['error'] != "") return $result;
-                    break;
-                case 'string':
-                    $result = self::validateStringSpec($spec, $params[$name]);
-                    if ($result['error'] != "") return $result;
-                    break;
-                case 'integer':
-                    $result = self::validateIntSpec($spec, $params[$name]);
-                    if ($result['error'] != "") return $result;
-                    break;
-            }
-        }
-        return $result;
     }
 
     public static function validateDateOfBirth(string $dateOfBirth, $specs): array
