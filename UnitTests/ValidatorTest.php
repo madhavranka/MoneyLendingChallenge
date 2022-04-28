@@ -184,7 +184,7 @@ class ValidatorTest extends TestCase
                     "amount" => 50000,
                     "name" => ""
                 ],
-                'expected' => ['error' => "name value too short"]
+                'expected' => ['error' => "name value failed regex match"]
             ],
             [
                 'spec' => $spec,
