@@ -22,7 +22,7 @@ class Loan
             "min-value" => 50000, "max-value" => 500000],
         "score" => ['type' => 'integer', "min-val" => 0, "max-val" => 900, "name" => "score"],
         "dob" => ["type" => "fn", "class" => "Validator", "name" => "validateDateOfBirth"],
-        "name" => ["type" => "string", "min-length" => 1, "regex" => "^[a-zA-Z\s]*$^", "name" => "name"],
+        "name" => ["type" => "string", "min-length" => 1, "regex" => "/^[a-zA-Z\s]+$/", "name" => "name"],
         "city" => ["type" => "string", "min-length" => 1, "name" => "city"]
     ];
 
